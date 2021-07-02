@@ -1,7 +1,9 @@
 package com.example.demo.jwt;
 
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.demo.controller.dto.AccountCredential;
 import com.example.demo.model.AppUser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +22,15 @@ public class JwtService {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    private final String KEY = "j;kladsjk;xmlsdfjie38881232";
+    private final static String KEY = "j;kladsjk;xmlsdfjie38881232";
+
+    private final static String JWT_CLAIM_USERID = "userId";
+    private final static String JWT_CLAIM_USERNAME = "username";
+    private final static String JWT_CLAIM_ROLES = "roles";
+    private final static String ISSUER = "Jerry";
+
+    // 5 hours
+    private final static Integer JWT_DURATION = 60 * 5;
 
     public String generateUserToken(AccountCredential accountCredential) {
 
@@ -33,22 +43,43 @@ public class JwtService {
         AppUser user = (AppUser) authentication.getPrincipal();
 
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.HOUR, 1);
+        calendar.add(Calendar.MINUTE, JWT_DURATION);
 
         Algorithm algorithmHS = Algorithm.HMAC256(KEY);
 
         return JWT.create()
-                .withClaim("userId", user.getId())
-                .withClaim("username", user.getUsername())
-                .withArrayClaim("roles", user.getAuthorities().stream().map(GrantedAuthority::getAuthority).toArray(String[]::new))
-                .withIssuer("Jerry")
+                .withClaim(JWT_CLAIM_USERID, user.getId())
+                .withClaim(JWT_CLAIM_USERNAME, user.getUsername())
+                .withArrayClaim(JWT_CLAIM_ROLES, user.getAuthorities().stream().map(GrantedAuthority::getAuthority).toArray(String[]::new))
+                .withIssuer(ISSUER)
                 .withExpiresAt(calendar.getTime())
                 .sign(algorithmHS);
 
     }
 
+    public boolean verifyToken(String token) {
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(KEY);
+            JWTVerifier verifier = JWT.require(algorithm)
+                    .withIssuer(ISSUER)
+                    .build();
+            verifier.verify(token);
+            return true;
+        } catch (Exception e) {
+            System.out.println("Exception in verifying " + e.toString());
+            return false;
+        }
+    }
+
     public Map<String, Object> parseToken(String token) {
-        return Map.of("username", "Fake", "token", token);
+
+        DecodedJWT jwt = JWT.decode(token);
+        Long id = jwt.getClaim(JWT_CLAIM_USERID).asLong();
+        String username = jwt.getClaim(JWT_CLAIM_USERNAME).asString();
+        String[] roles = jwt.getClaim(JWT_CLAIM_ROLES).asArray(String.class);
+        return Map.of(JWT_CLAIM_USERID, id,
+                JWT_CLAIM_USERNAME, username,
+                JWT_CLAIM_ROLES, roles);
     }
 
 }
