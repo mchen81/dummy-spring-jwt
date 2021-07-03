@@ -15,8 +15,6 @@ import java.util.Map;
 @Service
 public class JwtService {
 
-
-
     private final static String KEY = "j;kladsjk;xmlsdfjie38881232";
 
     private final static String JWT_CLAIM_USERID = "userId";

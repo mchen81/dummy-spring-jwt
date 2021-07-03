@@ -1,9 +1,13 @@
 package com.example.demo.security.authtication;
 
+import com.example.demo.entity.UserEntity;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class UserPrinciple implements UserDetails {
 
@@ -25,6 +29,27 @@ public class UserPrinciple implements UserDetails {
         this.email = email;
         this.password = password;
         this.authorities = authorities;
+    }
+
+    /**
+     * Transfer from UserEntity to UserPrinciple
+     *
+     * @param user database object
+     * @return UserPrinciple
+     */
+    public static UserPrinciple valueOf(UserEntity user) {
+        List<GrantedAuthority> authorities = user.getRoles().stream().map(role ->
+                new SimpleGrantedAuthority(role.getName())
+        ).collect(Collectors.toList());
+
+        return new UserPrinciple(
+                user.getId(),
+                user.getUsername(),
+                user.getEmail(),
+                user.getPassword(),
+                authorities
+        );
+
     }
 
     @Override

@@ -1,8 +1,16 @@
 package com.example.demo.entity;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "roles")
 public class RoleEntity {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    @Column(name = "name", unique = true, nullable = false)
     private String name;
 
     public Long getId() {

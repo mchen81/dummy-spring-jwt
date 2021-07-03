@@ -1,53 +1,54 @@
 package com.example.demo.service;
 
-import com.example.demo.dao.UserRepository;
+import com.example.demo.entity.RoleEntity;
 import com.example.demo.entity.UserEntity;
+import com.example.demo.repository.UserRepository;
 import com.example.demo.security.authtication.UserPrinciple;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class UserService implements UserDetailsManager {
 
-    private final UserRepository userRepository = new UserRepository();
+    @Autowired
+    private UserRepository userRepository;
+
+
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
-    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        Optional<UserEntity> optionalUser = userRepository.findUserByName(s);
+        UserEntity user = userRepository.findByUsername(username)
+                .orElseThrow(() ->
+                        new UsernameNotFoundException("username not found: " + username)
+                );
 
-        // TODO find user role
-        String[] roles = new String[]{"USER"};
-        List<GrantedAuthority> authorityList = new ArrayList<>(roles.length);
-        for (String role : roles) {
-            authorityList.add(new SimpleGrantedAuthority("ROLE_" + role));
-        }
-
-        if (optionalUser.isEmpty()) {
-            throw new UsernameNotFoundException("Cannot find user " + s);
-        }
-
-        UserEntity user = optionalUser.get();
-
-        return new UserPrinciple(user.getId(),
-                user.getUsername(),
-                user.getEmail(),
-                user.getPassword(),
-                authorityList);
+        return UserPrinciple.valueOf(user);
 
     }
 
     @Override
     public void createUser(UserDetails userDetails) {
-        //TODO to implement
+        UserPrinciple user = (UserPrinciple) userDetails;
+
+        RoleEntity roleEntity = new RoleEntity();
+        roleEntity.setId(1L);
+        roleEntity.setName("ROLE_USER");
+
+        UserEntity userEntity = new UserEntity();
+        userEntity.setEmail(user.getEmail());
+        userEntity.setUsername(user.getUsername());
+        userEntity.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        userEntity.setRoles(Set.of(roleEntity));
+        userRepository.save(userEntity);
     }
 
     @Override

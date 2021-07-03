@@ -1,3 +1,14 @@
-jwt:
-  secret: "qerupoiewrupoqieutqeoruiqer"
-  expiration: 86400
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/demo?createDatabaseIfNotExist=true
+    username: root
+    password: password
+    driver-class-name: com.mysql.jdbc.Driver
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialiect: org.hibernate.dialect.MySQL8Dialect
+
