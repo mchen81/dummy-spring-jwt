@@ -1,4 +1,4 @@
-package com.example.demo.jwt;
+package com.example.demo.security.jwt;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
