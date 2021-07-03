@@ -1,11 +1,10 @@
 package com.example.demo.entity;
 
-public class UserJpa {
+public class UserEntity {
 
     private Long id;
-
-    // can be username or email
-    private String userIdentity;
+    private String username;
+    private String email;
     private String password;
 
     public Long getId() {
@@ -16,12 +15,20 @@ public class UserJpa {
         this.id = id;
     }
 
-    public String getUserIdentity() {
-        return userIdentity;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserIdentity(String userIdentity) {
-        this.userIdentity = userIdentity;
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {

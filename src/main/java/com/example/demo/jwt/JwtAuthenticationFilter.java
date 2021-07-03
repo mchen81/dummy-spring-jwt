@@ -1,13 +1,13 @@
 package com.example.demo.jwt;
 
-import com.example.demo.model.AppUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -34,12 +34,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (authHeader != null) {
             String accessToken = authHeader.replace("Bearer ", "");
 
+
             Map<String, Object> claims = jwtService.parseToken(accessToken);
             String username = (String) claims.get("username");
-            AppUser userDetails = (AppUser) userDetailsService.loadUserByUsername(username);
-
-            Authentication authentication =
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+
+            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 

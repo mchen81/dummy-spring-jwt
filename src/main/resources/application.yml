@@ -1,0 +1,3 @@
+jwt:
+  secret: "qerupoiewrupoqieutqeoruiqer"
+  expiration: 86400

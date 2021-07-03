@@ -5,8 +5,8 @@ import javax.validation.constraints.NotNull;
 
 public class AccountCredential {
 
-    @NotBlank
     @NotNull
+    @NotBlank
     private String username;
 
     @NotBlank

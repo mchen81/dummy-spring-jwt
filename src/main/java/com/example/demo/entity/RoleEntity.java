@@ -1,6 +1,6 @@
 package com.example.demo.entity;
 
-public class RoleJpa {
+public class RoleEntity {
 
     private Long id;
     private String name;

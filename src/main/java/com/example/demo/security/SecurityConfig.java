@@ -31,17 +31,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity security) throws Exception {
+
+        // Disable session
+        security.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+        // Disable cors and csrf
+        security.csrf().disable()
+                .cors().disable();
+
         security.authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/hello").permitAll()
                 .antMatchers(HttpMethod.POST, "/secured").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .csrf().disable();
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
     }
 

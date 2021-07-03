@@ -2,22 +2,22 @@ package com.example.demo.entity;
 
 public class UserRole {
 
-    private UserJpa user;
-    private RoleJpa role;
+    private UserEntity user;
+    private RoleEntity role;
 
-    public UserJpa getUser() {
+    public UserEntity getUser() {
         return user;
     }
 
-    public void setUser(UserJpa user) {
+    public void setUser(UserEntity user) {
         this.user = user;
     }
 
-    public RoleJpa getRole() {
+    public RoleEntity getRole() {
         return role;
     }
 
-    public void setRole(RoleJpa role) {
+    public void setRole(RoleEntity role) {
         this.role = role;
     }
 }
