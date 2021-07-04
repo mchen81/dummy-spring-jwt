@@ -1,6 +1,5 @@
 server:
   port: 8080
-
 spring:
   datasource:
     url: jdbc:mysql://localhost:3306/demo?createDatabaseIfNotExist=true
@@ -13,6 +12,13 @@ spring:
     properties:
       hibernate:
         dialiect: org.hibernate.dialect.MySQL8Dialect
+
+logging:
+  file:
+    name: logs/application-debug.log
+  level:
+    org.springframework.web: DEBUG
+
 # you can put your custom global variables here
 app:
   security:
