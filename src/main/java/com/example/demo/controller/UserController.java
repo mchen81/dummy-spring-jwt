@@ -37,7 +37,7 @@ public class UserController {
 
         // check if user exists
         if (userDetailsManager.userExists(accountCredential.getUsername())) {
-            ResponseEntity.status(409).body("username is exited");
+            return ResponseEntity.status(409).body("username is exited");
         }
 
         // In this example, the userDetailsManager.createUser will allocate the new user as a ROLE_USER
