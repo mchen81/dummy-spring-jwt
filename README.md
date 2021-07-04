@@ -1,6 +1,15 @@
 # Description
 This exmple project demostrates how spring boot and spring security handles user authentication with JWT.  
 
+# Installation
+
+## Docker
+Once [Docker](https://www.docker.com/) is installed, then run-mysql.sh, this script will run a container of mysql8 and gets username/password set.   
+
+## Config
+The spring boot configuration is in src/main/resources/application.yml, you can set up the database connection here.   
+You can also change JWT secret, issuer and duration in this file.   
+
 # Endpoints
 ## Usage
 Anyone can make a GET and POST to localhost:8080/hello.   
