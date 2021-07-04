@@ -33,9 +33,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Transactional
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
         String authHeader = httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION);
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
 
-        if (authHeader != null) {
             String accessToken = authHeader.replace("Bearer ", "");
+
+            if (!jwtService.validateToken(accessToken)) {
+                throw new RuntimeException("Token is invalid");
+            }
 
             Map<String, Object> claims = jwtService.parseToken(accessToken);
             String username = (String) claims.get("username");
@@ -48,8 +52,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
-
         filterChain.doFilter(httpServletRequest, httpServletResponse);
-
     }
 }

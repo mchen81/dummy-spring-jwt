@@ -5,6 +5,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.demo.security.authtication.UserPrinciple;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
@@ -15,16 +16,19 @@ import java.util.Map;
 @Service
 public class JwtService {
 
-    private final static String KEY = "j;kladsjk;xmlsdfjie38881232";
+    @Value("${app.security.jwt.secret}")
+    private String KEY;
 
-    private final static String JWT_CLAIM_USERID = "userId";
-    private final static String JWT_CLAIM_USERNAME = "username";
-    private final static String JWT_CLAIM_ROLES = "roles";
-    private final static String JWT_CLAIM_EMAIL = "email";
-    private final static String ISSUER = "Jerry";
+    @Value("${app.security.jwt.issuer}")
+    private String ISSUER;
 
-    // 5 hours
-    private final static Integer JWT_DURATION = 60 * 5;
+    @Value("${app.security.jwt.duration}")
+    private Integer JWT_DURATION;
+
+    private final String JWT_CLAIM_USERID = "userId";
+    private final String JWT_CLAIM_USERNAME = "username";
+    private final String JWT_CLAIM_ROLES = "roles";
+    private final String JWT_CLAIM_EMAIL = "email";
 
 
     /**
@@ -34,8 +38,9 @@ public class JwtService {
      * @return token in String
      */
     public String generateUserToken(UserPrinciple userPrinciple) {
+
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MINUTE, JWT_DURATION);
+        calendar.add(Calendar.SECOND, JWT_DURATION);
 
         Algorithm algorithmHS = Algorithm.HMAC256(KEY);
 

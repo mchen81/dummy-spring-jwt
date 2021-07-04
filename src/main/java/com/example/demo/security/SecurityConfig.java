@@ -19,14 +19,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-
     @Autowired
     @Qualifier("userService")
     private UserDetailsService userDetailsService;
 
     @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
-
 
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
@@ -41,10 +39,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors().disable();
 
         security.authorizeRequests()
-                //.antMatchers(HttpMethod.GET, "/hello*").permitAll()
                 .antMatchers("/hello/**").permitAll()
-                //.antMatchers(HttpMethod.POST, "/hello*").permitAll()
-                .antMatchers(HttpMethod.POST, "/secured").permitAll()
+                .antMatchers(HttpMethod.POST, "/account/**").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
