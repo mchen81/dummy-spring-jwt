@@ -5,10 +5,11 @@ spring:
     url: jdbc:mysql://localhost:3306/demo?createDatabaseIfNotExist=true
     username: root
     password: password
+    initialize: true
   jpa:
     generate-ddl: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
     properties:
       hibernate:
         dialiect: org.hibernate.dialect.MySQL8Dialect
